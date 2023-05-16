@@ -1,21 +1,40 @@
 #include "file/text_extractor.hpp"
+
 #include <fstream>
+#include <vector>
 
 vocabzer::TextExtractor::TextExtractor(const std::filesystem::path& file_path)
 {
-	std::wifstream file(file_path, std::ios_base::binary);
-	
-	if (!file.is_open()) {
-		throw std::runtime_error("Failed to open file: " + file_path.string());
-	}
-
-	const auto file_size = std::filesystem::file_size(file_path);
-
-	file_data.resize(file_size);
-	file.read(reinterpret_cast<wchar_t*>(file_data.data()), file_size);
+	check_file(file_path);
+	process_file(file_path);
 }
 
-const std::vector<std::byte>& vocabzer::TextExtractor::get_text() const noexcept
+vocabzer::TextExtractor::TextExtractor(TextExtractor&& other) noexcept
 {
-	return file_data;
+	bytes = std::move(other.bytes);
+}
+
+vocabzer::TextExtractor& vocabzer::TextExtractor::operator=(TextExtractor&& other) noexcept
+{
+	bytes = std::move(other.bytes);
+	return *this;
+}
+
+const std::vector<char>& vocabzer::TextExtractor::get_text() const noexcept
+{
+	return bytes;
+}
+
+void vocabzer::TextExtractor::check_file(const std::filesystem::path& file_path) const
+{
+	std::basic_ifstream<char> file{ file_path, std::ios::binary };
+	if (!file.is_open()) {
+		throw std::runtime_error{ "Failed to open file: " + file_path.string() };
+	}
+}
+
+void vocabzer::TextExtractor::process_file(const std::filesystem::path& file_path) noexcept
+{
+	std::basic_ifstream<char> file{ file_path, std::ios::binary };
+	bytes.assign(std::istreambuf_iterator<char>(file), {});
 }

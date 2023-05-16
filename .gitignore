@@ -51,3 +51,6 @@ out/
 
 # Visual studio
 .vs/
+
+# VScode
+.vscode/
