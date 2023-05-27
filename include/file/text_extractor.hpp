@@ -13,7 +13,7 @@ public:
 	explicit TextExtractor(TextExtractor&& other) noexcept;
 	TextExtractor& operator=(TextExtractor&& other) noexcept;
 
-	virtual const std::vector<char>& get_text() const noexcept;
+	virtual std::vector<char>& get_text() noexcept;
 
 protected:
 	void check_file(const std::filesystem::path& file_path) const;

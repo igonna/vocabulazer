@@ -20,7 +20,7 @@ vocabzer::TextExtractor& vocabzer::TextExtractor::operator=(TextExtractor&& othe
 	return *this;
 }
 
-const std::vector<char>& vocabzer::TextExtractor::get_text() const noexcept
+std::vector<char>& vocabzer::TextExtractor::get_text() noexcept
 {
 	return bytes;
 }
