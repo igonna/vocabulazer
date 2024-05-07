@@ -28,8 +28,9 @@ int main(int argc, char* argv[])
 		auto convert_start_time = std::chrono::high_resolution_clock::now();
 
 		// text parse
-		vocabzer::TextConverter text_converter{ std::move(text) };
-		auto words = std::move(text_converter.get_words());
+		vocabzer::TextConverter text_converter("en");
+		text_converter.parse_sentences(std::move(text));
+		// auto words = std::move(text_converter.get_words());
 
 		auto convert_end_time = std::chrono::high_resolution_clock::now();
 		auto convert_duration = std::chrono::duration_cast<std::chrono::milliseconds>(convert_end_time - convert_start_time);
@@ -38,9 +39,11 @@ int main(int argc, char* argv[])
 		// output to file
 		std::ofstream output(file_path_out, std::ios::binary);
 
-		for (auto it = words.rbegin(); it != words.rend(); ++it) {
-		 	output << it->second << ';' << it->first << ';' << '\n';
-		}
+		output << text_converter.get_text_utf() << '\n';
+
+		// for (auto it = words.rbegin(); it != words.rend(); ++it) {
+		//  	output << it->second << ';' << it->first << ';' << '\n';
+		// }
 	}
 	catch (std::exception& e) {
 		std::cerr << e.what() << std::endl;
